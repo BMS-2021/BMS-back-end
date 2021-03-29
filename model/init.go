@@ -10,11 +10,20 @@ import (
 var db *gorm.DB
 
 func Init() {
-	ConnectDatabase()
+	connectDatabase()
+	err := db.AutoMigrate(&Admin{}, &Book{}, &Card{}, &Borrow{})
+	if err != nil {
+		logrus.Fatal(err)
+	}
 }
 
-func ConnectDatabase() {
+func connectDatabase() {
 	viper.SetConfigName("conf")
+	viper.AddConfigPath("./")
+	if err := viper.ReadInConfig(); err != nil {
+		logrus.Panic(err)
+	}
+
 	loginInfo := viper.GetStringMapString("sql")
 
 	dbArgs := loginInfo["username"] + ":" + loginInfo["password"] +
