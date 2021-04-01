@@ -1,7 +1,14 @@
+// @title Book Management System API
+// @version 0.1
+// @description This API will be used under staging environment.
+// @host RalXYZ.dev.zjuqsc.com
+// @BasePath /api
+
 package main
 
 import (
 	"BMS-back-end/controller"
+	_ "BMS-back-end/docs"
 	"BMS-back-end/model"
 )
 

@@ -5,6 +5,9 @@ import (
 )
 
 func addRoutes() {
-	api := e.Group("/api")
-	api.GET("/doc/*", echoSwagger.WrapHandler)
+	e.GET("/doc/*", echoSwagger.WrapHandler)
+
+	e.POST("/login", login)
+
+	// api := e.Group("/api")
 }

@@ -1,4 +1,36 @@
+basePath: /api
+definitions:
+  model.AdminReq:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - name
+    - password
+    type: object
+host: RalXYZ.dev.zjuqsc.com
 info:
   contact: {}
-paths: {}
+  description: This API will be used under staging environment.
+  title: Book Management System API
+  version: "0.1"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login information
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.AdminReq'
+      responses:
+        "200":
+          description: ""
+      tags:
+      - Login
 swagger: "2.0"

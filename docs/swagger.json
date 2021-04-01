@@ -1,7 +1,56 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This API will be used under staging environment.",
+        "title": "Book Management System API",
+        "contact": {},
+        "version": "0.1"
     },
-    "paths": {}
+    "host": "RalXYZ.dev.zjuqsc.com",
+    "basePath": "/api",
+    "paths": {
+        "/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Login"
+                ],
+                "parameters": [
+                    {
+                        "description": "Login information",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AdminReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AdminReq": {
+            "type": "object",
+            "required": [
+                "name",
+                "password"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

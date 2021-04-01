@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"BMS-back-end/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
@@ -11,6 +12,7 @@ func InitWebFramework() {
 	e = echo.New()
 	e.HideBanner = true
 	addRoutes()
+	e.Validator = &utils.CustomValidator{}
 
 	logrus.Info("echo framework initialized")
 }

@@ -6,3 +6,13 @@ type Admin struct {
 	Name     string `gorm:"not null"`
 	Contact  string `gorm:"not null"`
 }
+
+type AdminReq struct {
+	Name     string `json:"name" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+func RetrieveAdmin(admin *Admin) error {
+	result := db.Where(admin).First(admin)
+	return result.Error
+}
