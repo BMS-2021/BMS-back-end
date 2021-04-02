@@ -24,17 +24,101 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/book": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Create a single book item",
+                "parameters": [
+                    {
+                        "description": "Information of a book",
+                        "name": "book",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BookReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/books": {
-            "post": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Retrieve multiple books under multiple conditions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "author",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "press",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "priceMax",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "priceMin",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "yearMax",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "yearMin",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
                 "consumes": [
                     "text/csv"
                 ],
                 "tags": [
                     "Book"
                 ],
+                "summary": "Create multiple book items by uploading a csv file",
                 "parameters": [
                     {
-                        "description": "Login information",
+                        "description": "A csv file, with book information inside",
                         "name": "file",
                         "in": "body",
                         "required": true,
@@ -90,6 +174,45 @@ var doc = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "model.BookReq": {
+            "type": "object",
+            "required": [
+                "author",
+                "category",
+                "press",
+                "price",
+                "stock",
+                "title",
+                "total",
+                "year"
+            ],
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "press": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "year": {
+                    "type": "integer"
                 }
             }
         }

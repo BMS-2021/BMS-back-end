@@ -1,5 +1,5 @@
 // @title Book Management System API
-// @version 0.1
+// @version 0.2
 // @description This API will be used under staging environment.
 // @host ralxyz.dev.zjuqsc.com
 // @BasePath /api

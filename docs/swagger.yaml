@@ -10,6 +10,34 @@ definitions:
     - name
     - password
     type: object
+  model.BookReq:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      press:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      title:
+        type: string
+      total:
+        type: integer
+      year:
+        type: integer
+    required:
+    - author
+    - category
+    - press
+    - price
+    - stock
+    - title
+    - total
+    - year
+    type: object
 host: ralxyz.dev.zjuqsc.com
 info:
   contact: {}
@@ -17,12 +45,63 @@ info:
   title: Book Management System API
   version: "0.1"
 paths:
+  /book:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Information of a book
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/model.BookReq'
+      responses:
+        "200":
+          description: ""
+      summary: Create a single book item
+      tags:
+      - Book
   /books:
-    post:
+    get:
+      parameters:
+      - in: query
+        name: author
+        type: string
+      - in: query
+        name: category
+        type: string
+      - in: query
+        name: press
+        type: string
+      - in: query
+        name: priceMax
+        type: integer
+      - in: query
+        name: priceMin
+        type: integer
+      - in: query
+        name: title
+        type: string
+      - in: query
+        name: yearMax
+        type: integer
+      - in: query
+        name: yearMin
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Retrieve multiple books under multiple conditions
+      tags:
+      - Book
+    put:
       consumes:
       - text/csv
       parameters:
-      - description: Login information
+      - description: A csv file, with book information inside
         in: body
         name: file
         required: true
@@ -31,6 +110,7 @@ paths:
       responses:
         "200":
           description: ""
+      summary: Create multiple book items by uploading a csv file
       tags:
       - Book
   /login:

@@ -4,6 +4,7 @@ import (
 	"BMS-back-end/model"
 	"encoding/csv"
 	"github.com/gocarina/gocsv"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -12,11 +13,12 @@ import (
 )
 
 // @tags Book
-// @router /books [post]
+// @summary Create multiple book items by uploading a csv file
+// @router /books [put]
 // @accept text/csv
-// @param file body object true "Login information"
+// @param file body object true "A csv file, with book information inside"
 // @success 200
-func storeBookCsv(c echo.Context) error  {
+func storeBookCsv(c echo.Context) error {
 	fileReq, err := c.FormFile("file")
 	if err != nil {
 		return c.String(http.StatusBadRequest, "cannot find the file key in request body")
@@ -86,4 +88,56 @@ func storeBookCsv(c echo.Context) error  {
 	}
 
 	return c.NoContent(http.StatusOK)
+}
+
+// @tags Book
+// @summary Create a single book item
+// @router /book [put]
+// @accept json
+// @param book body model.BookReq true "Information of a book"
+// @success 200
+func storeBook(c echo.Context) error {
+	bookReq := model.BookReq{}
+	if err := c.Bind(&bookReq); err != nil {
+		return c.String(http.StatusBadRequest, "there are some errors with the parameters")
+	} else if err = c.Validate(&bookReq); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	book := model.Book{}
+	_ = copier.Copy(&book, &bookReq)
+
+	err := model.CreateBooks(&[]*model.Book{&book})
+	if err != nil {
+		logrus.Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
+// @tags Book
+// @summary Retrieve multiple books under multiple conditions
+// @router /books [get]
+// @param data query model.BookQueryReq false " "
+// @produce json
+// @success 200
+func retrieveBooks(c echo.Context) error {
+	bookQueryReq := model.BookQueryReq{}
+	if err := c.Bind(&bookQueryReq); err != nil {
+		return c.String(http.StatusBadRequest, "there are some errors with the parameters")
+	}
+
+	book := model.Book{}
+	_ = copier.Copy(&book, &bookQueryReq)
+
+	dbBooks, err := model.RetrieveBooks(&book,
+		[]uint64{bookQueryReq.YearMin, bookQueryReq.YearMax},
+		[]uint64{bookQueryReq.PriceMin, bookQueryReq.PriceMax})
+
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	return c.JSON(http.StatusOK, dbBooks)
 }
