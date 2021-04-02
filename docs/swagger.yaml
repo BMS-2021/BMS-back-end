@@ -17,6 +17,22 @@ info:
   title: Book Management System API
   version: "0.1"
 paths:
+  /books:
+    post:
+      consumes:
+      - text/csv
+      parameters:
+      - description: Login information
+        in: body
+        name: file
+        required: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: ""
+      tags:
+      - Book
   /login:
     post:
       consumes:

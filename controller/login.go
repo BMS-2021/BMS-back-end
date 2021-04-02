@@ -32,7 +32,7 @@ func login(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	if adminReq.Password != adminDb.Password {
-		return c.String(http.StatusBadRequest, "invalid username or password")
+		return c.String(http.StatusForbidden, "invalid username or password")
 	}
 
 	jwtString, expTime, err := utils.GenerateJwt(adminDb.ID)
