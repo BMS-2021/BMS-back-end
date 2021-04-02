@@ -6,7 +6,7 @@
         "contact": {},
         "version": "0.1"
     },
-    "host": "RalXYZ.dev.zjuqsc.com",
+    "host": "ralxyz.dev.zjuqsc.com",
     "basePath": "/api",
     "paths": {
         "/login": {

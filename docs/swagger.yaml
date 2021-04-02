@@ -10,7 +10,7 @@ definitions:
     - name
     - password
     type: object
-host: RalXYZ.dev.zjuqsc.com
+host: ralxyz.dev.zjuqsc.com
 info:
   contact: {}
   description: This API will be used under staging environment.

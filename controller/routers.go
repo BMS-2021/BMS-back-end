@@ -7,7 +7,6 @@ import (
 func addRoutes() {
 	e.GET("/doc/*", echoSwagger.WrapHandler)
 
-	e.POST("/login", login)
-
-	// api := e.Group("/api")
+	api := e.Group("/api")
+	api.POST("/login", login)
 }
