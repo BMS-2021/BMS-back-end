@@ -10,9 +10,12 @@ func addRoutes() {
 
 	e.POST("/api/login", login)
 	e.GET("/api/login", getLoginStatus)
+	e.GET("/api/books", retrieveBooks)
 
 	api := e.Group("/api", middleware.Auth)
 	api.PUT("/book", storeBook)
 	api.PUT("/books", storeBookCsv)
-	api.GET("/books", retrieveBooks)
+
+	api.PUT("/card", createCard)
+	api.DELETE("/card", deleteCard)
 }

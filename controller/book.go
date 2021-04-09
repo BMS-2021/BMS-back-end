@@ -17,6 +17,7 @@ import (
 // @router /books [put]
 // @accept text/csv
 // @param file body object true "A csv file, with book information inside"
+// @produce plain
 // @success 200
 func storeBookCsv(c echo.Context) error {
 	fileReq, err := c.FormFile("file")
@@ -99,6 +100,7 @@ func storeBookCsv(c echo.Context) error {
 // @router /book [put]
 // @accept json
 // @param book body model.BookReq true "Information of a book"
+// @produce plain
 // @success 200
 func storeBook(c echo.Context) error {
 	bookReq := model.BookReq{}
@@ -126,7 +128,7 @@ func storeBook(c echo.Context) error {
 // @router /books [get]
 // @param data query model.BookQueryReq false " "
 // @produce json
-// @success 200 {object} model.Book
+// @success 200 {object} []model.Book
 // @failure 400 {string} string "Bad request"
 func retrieveBooks(c echo.Context) error {
 	bookQueryReq := model.BookQueryReq{}

@@ -63,6 +63,15 @@ definitions:
     - total
     - year
     type: object
+  model.CardReq:
+    properties:
+      department:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    type: object
 host: ralxyz.dev.zjuqsc.com
 info:
   contact: {}
@@ -81,6 +90,8 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.BookReq'
+      produces:
+      - text/plain
       responses:
         "200":
           description: ""
@@ -120,7 +131,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Book'
+            items:
+              $ref: '#/definitions/model.Book'
+            type: array
         "400":
           description: Bad request
           schema:
@@ -138,12 +151,60 @@ paths:
         required: true
         schema:
           type: object
+      produces:
+      - text/plain
       responses:
         "200":
           description: ""
       summary: Create multiple book items by uploading a csv file
       tags:
       - Book
+  /card:
+    delete:
+      parameters:
+      - description: Card ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: ""
+      summary: Delete a library card
+      tags:
+      - Card
+    put:
+      parameters:
+      - description: ' '
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.CardReq'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Card ID
+          schema:
+            type: integer
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: ""
+      summary: Create a library card
+      tags:
+      - Card
   /login:
     get:
       responses:
@@ -168,9 +229,12 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.AdminReq'
+      produces:
+      - text/plain
       responses:
         "200":
           description: ""
+      summary: Admin login
       tags:
       - Login
 swagger: "2.0"

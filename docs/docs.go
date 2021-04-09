@@ -29,6 +29,9 @@ var doc = `{
                 "consumes": [
                     "application/json"
                 ],
+                "produces": [
+                    "text/plain"
+                ],
                 "tags": [
                     "Book"
                 ],
@@ -106,7 +109,10 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Book"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Book"
+                            }
                         }
                     },
                     "400": {
@@ -120,6 +126,9 @@ var doc = `{
             "put": {
                 "consumes": [
                     "text/csv"
+                ],
+                "produces": [
+                    "text/plain"
                 ],
                 "tags": [
                     "Book"
@@ -138,6 +147,77 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/card": {
+            "put": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Create a library card",
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CardReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Delete a library card",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
                         "description": ""
                     }
                 }
@@ -168,9 +248,13 @@ var doc = `{
                 "consumes": [
                     "application/json"
                 ],
+                "produces": [
+                    "text/plain"
+                ],
                 "tags": [
                     "Login"
                 ],
+                "summary": "Admin login",
                 "parameters": [
                     {
                         "description": "Login information",
@@ -281,6 +365,20 @@ var doc = `{
                 },
                 "year": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.CardReq": {
+            "type": "object",
+            "properties": {
+                "department": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         }

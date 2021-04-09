@@ -14,9 +14,11 @@ import (
 )
 
 // @tags Login
+// @Summary Admin login
 // @router /login [post]
 // @accept json
 // @param data body model.AdminReq true "Login information"
+// @produce plain
 // @success 200
 func login(c echo.Context) error {
 	adminReq := model.AdminReq{}
