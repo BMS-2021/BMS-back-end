@@ -29,18 +29,17 @@ func GenerateJwt(uid uint64) (string, *time.Time, error) {
 	return tokenString, &expireTime, nil
 }
 
-func ParseJwt(tokenString string) (*jwt.Token, *jwt.StandardClaims, error) {
+func ParseJwt(tokenString string) (*jwt.Token, error) {
 	mySigningKey := []byte(viper.GetString("jwt.secret_key"))
-	claims := jwt.StandardClaims{}
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpexted singing method: %v\n", token.Header["alg"])
 		}
 		return mySigningKey, nil
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return token, &claims, nil
+	return token, nil
 }

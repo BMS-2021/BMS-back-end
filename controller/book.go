@@ -56,7 +56,7 @@ func storeBookCsv(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	columnNames := map[string]bool{"category": false, "title": false, "press": false,
-		"year": false, "author": false, "price": false, "total": false, "stock": false}
+		"year": false, "author": false, "price": false, "total": false}
 	for _, v := range record {
 		if _, ok := columnNames[v]; ok {
 			columnNames[v] = true
@@ -79,6 +79,10 @@ func storeBookCsv(c echo.Context) error {
 		logrus.Error("error when unmarshalling csv")
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	for k, _ := range books {
+		books[k].Stock = books[k].Total
 	}
 
 	err = model.CreateBooks(&books)
@@ -106,6 +110,7 @@ func storeBook(c echo.Context) error {
 
 	book := model.Book{}
 	_ = copier.Copy(&book, &bookReq)
+	book.Stock = bookReq.Total
 
 	err := model.CreateBooks(&[]*model.Book{&book})
 	if err != nil {
@@ -121,7 +126,8 @@ func storeBook(c echo.Context) error {
 // @router /books [get]
 // @param data query model.BookQueryReq false " "
 // @produce json
-// @success 200
+// @success 200 {object} model.Book
+// @failure 400 {string} string "Bad request"
 func retrieveBooks(c echo.Context) error {
 	bookQueryReq := model.BookQueryReq{}
 	if err := c.Bind(&bookQueryReq); err != nil {

@@ -3,15 +3,15 @@ package model
 import "strconv"
 
 type Book struct {
-	ID       uint64  `gorm:"not null;autoIncrement;primaryKey" csv:"-"`
-	Category string  `gorm:"not null;size:10" csv:"category"`
-	Title    string  `gorm:"not null;size:40" csv:"title"`
-	Press    string  `gorm:"not null;size:30" csv:"press"`
-	Year     uint64  `gorm:"not null" csv:"year"`
-	Author   string  `gorm:"not null;size:20" csv:"author"`
-	Price    float64 `gorm:"not null" csv:"price"`
-	Total    uint64  `gorm:"not null" csv:"total"`
-	Stock    uint64  `gorm:"not null" csv:"stock"`
+	ID       uint64  `gorm:"not null;autoIncrement;primaryKey" csv:"-" json:"id"`
+	Category string  `gorm:"not null;size:10" csv:"category" json:"category"`
+	Title    string  `gorm:"not null;size:40" csv:"title" json:"title"`
+	Press    string  `gorm:"not null;size:30" csv:"press" json:"press"`
+	Year     uint64  `gorm:"not null" csv:"year" json:"year"`
+	Author   string  `gorm:"not null;size:20" csv:"author" json:"author"`
+	Price    float64 `gorm:"not null" csv:"price" json:"price"`
+	Total    uint64  `gorm:"not null" csv:"total" json:"total"`
+	Stock    uint64  `gorm:"not null" csv:"stock" json:"stock"`
 }
 
 type BookReq struct {
@@ -22,7 +22,6 @@ type BookReq struct {
 	Author   string  `json:"author" validate:"required"`
 	Price    float64 `json:"price" validate:"required"`
 	Total    uint64  `json:"total" validate:"required"`
-	Stock    uint64  `json:"stock" validate:"required"`
 }
 
 type BookQueryReq struct {

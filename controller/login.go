@@ -4,6 +4,7 @@ import (
 	"BMS-back-end/model"
 	"BMS-back-end/utils"
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -70,14 +71,19 @@ func getLoginStatus(c echo.Context) error {
 	}
 
 	/* check validity of JWT */
-	_, claims, err := utils.ParseJwt(cookie.Value)
+	jwtToken, err := utils.ParseJwt(cookie.Value)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, "jwt invalid, please login again")
 	}
 
-	uid, err := strconv.ParseUint(claims.Subject, 10, 64)
+	claims, ok := jwtToken.Claims.(jwt.MapClaims)
+	if !ok {
+		logrus.Error("error while retrieving user data: JWT format error")
+		return c.JSON(http.StatusOK, &model.AdminResp{Name: "Test Account", Contact: "me@example.com"})
+	}
+	uid, err := strconv.ParseUint(claims["sub"].(string), 10, 64)
 	if err != nil {
-		logrus.WithField("uid", claims.Subject).
+		logrus.WithField("uid", claims["sub"].(string)).
 			Error("error while retrieving user data: SUB in JWT is not an integer")
 		return c.JSON(http.StatusOK, &model.AdminResp{Name: "Test Account", Contact: "me@example.com"})
 	}
@@ -85,7 +91,7 @@ func getLoginStatus(c echo.Context) error {
 	dbAdmin := model.Admin{ID: uid}
 	err = model.RetrieveAdmin(&dbAdmin)
 	if err != nil {
-		logrus.WithField("uid", claims.Subject).
+		logrus.WithField("uid", uid).
 			Error("error while retrieving user data: uid not exist in database")
 		return c.JSON(http.StatusOK, &model.AdminResp{Name: "Test Account", Contact: "me@example.com"})
 	}

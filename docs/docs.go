@@ -104,7 +104,16 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Book"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             },
@@ -208,6 +217,38 @@ var doc = `{
                 }
             }
         },
+        "model.Book": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "press": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.BookReq": {
             "type": "object",
             "required": [
@@ -215,7 +256,6 @@ var doc = `{
                 "category",
                 "press",
                 "price",
-                "stock",
                 "title",
                 "total",
                 "year"
@@ -232,9 +272,6 @@ var doc = `{
                 },
                 "price": {
                     "type": "number"
-                },
-                "stock": {
-                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

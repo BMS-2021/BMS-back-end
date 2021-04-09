@@ -89,7 +89,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Book"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             },
@@ -193,6 +202,38 @@
                 }
             }
         },
+        "model.Book": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "press": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.BookReq": {
             "type": "object",
             "required": [
@@ -200,7 +241,6 @@
                 "category",
                 "press",
                 "price",
-                "stock",
                 "title",
                 "total",
                 "year"
@@ -217,9 +257,6 @@
                 },
                 "price": {
                     "type": "number"
-                },
-                "stock": {
-                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

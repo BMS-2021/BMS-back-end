@@ -17,12 +17,14 @@ definitions:
       name:
         type: string
     type: object
-  model.BookReq:
+  model.Book:
     properties:
       author:
         type: string
       category:
         type: string
+      id:
+        type: integer
       press:
         type: string
       price:
@@ -35,12 +37,28 @@ definitions:
         type: integer
       year:
         type: integer
+    type: object
+  model.BookReq:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      press:
+        type: string
+      price:
+        type: number
+      title:
+        type: string
+      total:
+        type: integer
+      year:
+        type: integer
     required:
     - author
     - category
     - press
     - price
-    - stock
     - title
     - total
     - year
@@ -100,7 +118,13 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Book'
+        "400":
+          description: Bad request
+          schema:
+            type: string
       summary: Retrieve multiple books under multiple conditions
       tags:
       - Book

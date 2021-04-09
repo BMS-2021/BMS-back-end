@@ -19,7 +19,7 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* check validity of JWT */
-		_, _, err = utils.ParseJwt(cookie.Value)
+		_, err = utils.ParseJwt(cookie.Value)
 		if err != nil {
 			return c.String(http.StatusUnauthorized, "jwt invalid, please login again")
 		}
