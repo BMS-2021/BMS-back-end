@@ -135,6 +135,26 @@ var doc = `{
             }
         },
         "/login": {
+            "get": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Check login status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AdminResp"
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -173,6 +193,17 @@ var doc = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AdminResp": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -230,7 +261,7 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "0.1",
+	Version:     "0.2",
 	Host:        "ralxyz.dev.zjuqsc.com",
 	BasePath:    "/api",
 	Schemes:     []string{},

@@ -10,6 +10,13 @@ definitions:
     - name
     - password
     type: object
+  model.AdminResp:
+    properties:
+      contact:
+        type: string
+      name:
+        type: string
+    type: object
   model.BookReq:
     properties:
       author:
@@ -43,7 +50,7 @@ info:
   contact: {}
   description: This API will be used under staging environment.
   title: Book Management System API
-  version: "0.1"
+  version: "0.2"
 paths:
   /book:
     put:
@@ -114,6 +121,19 @@ paths:
       tags:
       - Book
   /login:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AdminResp'
+        "401":
+          description: Not logged in
+          schema:
+            type: string
+      summary: Check login status
+      tags:
+      - Login
     post:
       consumes:
       - application/json

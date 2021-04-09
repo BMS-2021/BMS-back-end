@@ -4,7 +4,7 @@
         "description": "This API will be used under staging environment.",
         "title": "Book Management System API",
         "contact": {},
-        "version": "0.1"
+        "version": "0.2"
     },
     "host": "ralxyz.dev.zjuqsc.com",
     "basePath": "/api",
@@ -120,6 +120,26 @@
             }
         },
         "/login": {
+            "get": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Check login status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AdminResp"
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -158,6 +178,17 @@
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AdminResp": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

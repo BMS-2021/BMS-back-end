@@ -12,6 +12,11 @@ type AdminReq struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type AdminResp struct {
+	Name     string `json:"name"`
+	Contact  string `json:"contact"`
+}
+
 func RetrieveAdmin(admin *Admin) error {
 	result := db.Where(admin).First(admin)
 	return result.Error
