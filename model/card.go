@@ -8,9 +8,9 @@ type Card struct {
 }
 
 type CardReq struct {
-	Name       string `json:"name"`
-	Department string `json:"department"`
-	Type       string `json:"type"`
+	Name       string `json:"name" validate:"required"`
+	Department string `json:"department" validate:"required"`
+	Type       string `json:"type" validate:"required"`
 }
 
 func CreateCard(card *Card) error {
@@ -19,6 +19,6 @@ func CreateCard(card *Card) error {
 }
 
 func DeleteCard(id uint64) error {
-	result := db.Delete(id)
+	result := db.Delete(&Card{}, id)
 	return result.Error
 }

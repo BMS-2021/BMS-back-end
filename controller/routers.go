@@ -18,4 +18,6 @@ func addRoutes() {
 
 	api.PUT("/card", createCard)
 	api.DELETE("/card", deleteCard)
+
+	api.GET("/borrow", getBorrowed)
 }

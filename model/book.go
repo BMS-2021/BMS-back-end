@@ -29,10 +29,10 @@ type BookQueryReq struct {
 	Title    string `query:"title"`
 	Press    string `query:"press"`
 	Author   string `query:"author"`
-	YearMin  uint64 `query:"year_min"`
-	YearMax  uint64 `query:"year_max"`
-	PriceMin uint64 `query:"price_min"`
-	PriceMax uint64 `query:"price_max"`
+	YearMin  uint64 `query:"yearMin"`
+	YearMax  uint64 `query:"yearMax"`
+	PriceMin uint64 `query:"priceMin"`
+	PriceMax uint64 `query:"priceMax"`
 }
 
 func CreateBooks(books *[]*Book) error {

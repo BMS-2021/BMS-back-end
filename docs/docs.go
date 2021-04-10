@@ -152,10 +152,47 @@ var doc = `{
                 }
             }
         },
+        "/borrow": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Borrow"
+                ],
+                "summary": "Get the books borrowed by a specific Bard",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Card ID",
+                        "name": "cardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Book"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/card": {
             "put": {
                 "produces": [
-                    "text/plain"
+                    "application/json"
                 ],
                 "tags": [
                     "Card"
@@ -173,12 +210,6 @@ var doc = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Card ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     "400": {
                         "description": "Bad request",
                         "schema": {
@@ -370,6 +401,11 @@ var doc = `{
         },
         "model.CardReq": {
             "type": "object",
+            "required": [
+                "department",
+                "name",
+                "type"
+            ],
             "properties": {
                 "department": {
                     "type": "string"

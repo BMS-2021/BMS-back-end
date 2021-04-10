@@ -6,15 +6,13 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 )
 
 // @tags Card
 // @summary Create a library card
 // @router /card [put]
 // @param data body model.CardReq true " "
-// @produce plain
-// @success 200 {integer} uint "Card ID"
+// @produce json
 // @failure 400 {string} string "Bad request"
 // @failure 500
 func createCard(c echo.Context) error {
@@ -34,7 +32,8 @@ func createCard(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	return c.String(http.StatusOK, strconv.FormatUint(card.ID, 10))
+	return c.JSON(http.StatusOK, &struct{ID uint64 `json:"id"`}{ID: card.ID})
+
 }
 
 // @tags Card

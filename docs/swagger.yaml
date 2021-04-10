@@ -71,6 +71,10 @@ definitions:
         type: string
       type:
         type: string
+    required:
+    - department
+    - name
+    - type
     type: object
 host: ralxyz.dev.zjuqsc.com
 info:
@@ -159,6 +163,30 @@ paths:
       summary: Create multiple book items by uploading a csv file
       tags:
       - Book
+  /borrow:
+    get:
+      parameters:
+      - description: Card ID
+        in: query
+        name: cardId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Book'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            type: string
+      summary: Get the books borrowed by a specific Bard
+      tags:
+      - Borrow
   /card:
     delete:
       parameters:
@@ -190,12 +218,8 @@ paths:
         schema:
           $ref: '#/definitions/model.CardReq'
       produces:
-      - text/plain
+      - application/json
       responses:
-        "200":
-          description: Card ID
-          schema:
-            type: integer
         "400":
           description: Bad request
           schema:
