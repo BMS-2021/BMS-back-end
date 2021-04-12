@@ -25,7 +25,7 @@ func getBorrowed(c echo.Context) error {
 	}
 
 	booksMap := make(map[uint64]*model.Book)
-	var books []*model.Book
+	books := make([]*model.Book, 0)
 	for _, v := range *borrows {
 		if _, ok := booksMap[v.BookID]; !ok {
 			booksMap[v.BookID] = &v.Book
