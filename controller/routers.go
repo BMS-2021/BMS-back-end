@@ -17,7 +17,10 @@ func addRoutes() {
 	api.PUT("/books", storeBookCsv)
 
 	api.PUT("/card", createCard)
+	api.GET("/card", getCard)
 	api.DELETE("/card", deleteCard)
 
+	api.POST("/borrow", createBorrow)
 	api.GET("/borrow", getBorrowed)
+	api.POST("/return", updateReturn)
 }

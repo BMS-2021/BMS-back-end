@@ -81,7 +81,7 @@ info:
   contact: {}
   description: This API will be used under staging environment.
   title: Book Management System API
-  version: "0.2"
+  version: "0.3"
 paths:
   /book:
     put:
@@ -187,6 +187,40 @@ paths:
       summary: Get the books borrowed by a specific Bard
       tags:
       - Borrow
+    post:
+      parameters:
+      - description: Book ID
+        in: query
+        name: bookId
+        required: true
+        type: integer
+      - description: Card ID
+        in: query
+        name: cardId
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "403":
+          description: The requested book has been all borrowed, return the last borrowed
+            time object
+          schema:
+            type: object
+        "404":
+          description: Book not found or Card not found
+          schema:
+            type: string
+      summary: Borrow a new book
+      tags:
+      - Borrow
   /card:
     delete:
       parameters:
@@ -207,6 +241,25 @@ paths:
         "500":
           description: ""
       summary: Delete a library card
+      tags:
+      - Card
+    get:
+      parameters:
+      - description: Card ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: ""
+      summary: Retrieve a library card
       tags:
       - Card
     put:
@@ -261,4 +314,29 @@ paths:
       summary: Admin login
       tags:
       - Login
+  /return:
+    post:
+      parameters:
+      - description: Book ID
+        in: query
+        name: bookId
+        required: true
+        type: integer
+      - description: Card ID
+        in: query
+        name: cardId
+        required: true
+        type: integer
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: ""
+        "404":
+          description: Book not found or Card not found or Borrow not found
+          schema:
+            type: string
+      summary: Return a book
+      tags:
+      - Borrow
 swagger: "2.0"

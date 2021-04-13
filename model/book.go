@@ -73,3 +73,9 @@ func RetrieveBooks(book *Book, year []uint64, price []uint64) (*[]Book, error) {
 	result := db.Where(book).Find(&dbBooks, sqlConditionString)
 	return &dbBooks, result.Error
 }
+
+func RetrieveBook(id uint64) (*Book, error) {
+	dbBook := Book{ID: id}
+	result := db.First(&dbBook)
+	return &dbBook, result.Error
+}

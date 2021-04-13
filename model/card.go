@@ -18,6 +18,12 @@ func CreateCard(card *Card) error {
 	return result.Error
 }
 
+func GetCard(id uint64) (*Card, error) {
+	dbCard := Card{ID: id}
+	result := db.First(&dbCard)
+	return &dbCard, result.Error
+}
+
 func DeleteCard(id uint64) error {
 	result := db.Delete(&Card{}, id)
 	return result.Error

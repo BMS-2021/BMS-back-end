@@ -2,9 +2,11 @@ package controller
 
 import (
 	"BMS-back-end/model"
+	"errors"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -34,6 +36,31 @@ func createCard(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &struct{ID uint64 `json:"id"`}{ID: card.ID})
 
+}
+
+// @tags Card
+// @summary Retrieve a library card
+// @router /card [get]
+// @param id query uint true "Card ID"
+// @produce json
+// @failure 400 {string} string "Bad request"
+// @failure 500
+func getCard(c echo.Context) error {
+	var id uint64
+	if err := echo.QueryParamsBinder(c).MustUint64("id", &id).BindError(); err != nil {
+		return c.String(http.StatusBadRequest, "there are some errors with the parameters")
+	}
+
+	dbCard, err := model.GetCard(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.String(http.StatusNotFound, "Card ID not found in database")
+		}
+		logrus.Error(err)
+		return c.NoContent(http.StatusInternalServerError)
+	}
+
+	return c.JSON(http.StatusOK, dbCard)
 }
 
 // @tags Card

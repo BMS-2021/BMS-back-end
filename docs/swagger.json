@@ -4,7 +4,7 @@
         "description": "This API will be used under staging environment.",
         "title": "Book Management System API",
         "contact": {},
-        "version": "0.2"
+        "version": "0.3"
     },
     "host": "ralxyz.dev.zjuqsc.com",
     "basePath": "/api",
@@ -172,9 +172,87 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "produces": [
+                    "text/plain",
+                    "application/json"
+                ],
+                "tags": [
+                    "Borrow"
+                ],
+                "summary": "Borrow a new book",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Card ID",
+                        "name": "cardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "The requested book has been all borrowed, return the last borrowed time object",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "404": {
+                        "description": "Book not found or Card not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/card": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Retrieve a library card",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
             "put": {
                 "produces": [
                     "application/json"
@@ -285,6 +363,44 @@
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/return": {
+            "post": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Borrow"
+                ],
+                "summary": "Return a book",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Card ID",
+                        "name": "cardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": "Book not found or Card not found or Borrow not found",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
