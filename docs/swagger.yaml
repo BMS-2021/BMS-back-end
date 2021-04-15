@@ -63,6 +63,16 @@ definitions:
     - total
     - year
     type: object
+  model.BorrowReq:
+    properties:
+      bookId:
+        type: integer
+      cardId:
+        type: integer
+    required:
+    - bookId
+    - cardId
+    type: object
   model.CardReq:
     properties:
       department:
@@ -189,16 +199,12 @@ paths:
       - Borrow
     post:
       parameters:
-      - description: Book ID
-        in: query
-        name: bookId
+      - description: ' '
+        in: body
+        name: data
         required: true
-        type: integer
-      - description: Card ID
-        in: query
-        name: cardId
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/model.BorrowReq'
       produces:
       - text/plain
       - application/json
@@ -317,16 +323,12 @@ paths:
   /return:
     post:
       parameters:
-      - description: Book ID
-        in: query
-        name: bookId
+      - description: ' '
+        in: body
+        name: data
         required: true
-        type: integer
-      - description: Card ID
-        in: query
-        name: cardId
-        required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/model.BorrowReq'
       produces:
       - text/plain
       responses:

@@ -16,20 +16,26 @@ type Borrow struct {
 	ReturnTime time.Time
 }
 
+type BorrowReq struct {
+	BookId uint64 `json:"bookId" validate:"required"`
+	CardId uint64 `json:"cardId" validate:"required"`
+}
+
 func GetBorrowWithBook(cardId uint64) (*[]Borrow, error) {
 	var borrows []Borrow
 	result := db.Preload("Book").Where(&Borrow{CardID: cardId}).Find(&borrows)
 	return &borrows, result.Error
 }
 
-func BorrowBook(bookId uint64, cardId uint64, dbBook *Book) error {
+func BorrowBook(bookId uint64, cardId uint64, adminId uint64, dbBook *Book) error {
 	return db.Transaction(func(tx *gorm.DB) error {
 		dbBook.Stock -= 1
 		if err := tx.Save(dbBook).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Create(&Borrow{BookID: bookId, CardID: cardId, BorrowTime: time.Now()}).Error; err != nil {
+		if err := tx.Create(&Borrow{BookID: bookId, CardID: cardId, AdminID: adminId, BorrowTime: time.Now()}).
+			Error; err != nil {
 			return err
 		}
 
@@ -39,7 +45,7 @@ func BorrowBook(bookId uint64, cardId uint64, dbBook *Book) error {
 
 func ReturnBook(bookId uint64, cardId uint64, dbBook *Book) error {
 	return db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where(Borrow{BookID: bookId, CardID: cardId}).
+		if err := tx.Model(&Borrow{}).Where(&Borrow{BookID: bookId, CardID: cardId}).
 			Update("return_time", time.Now()).Error; err != nil {
 			return err
 		}

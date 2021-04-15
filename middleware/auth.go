@@ -2,9 +2,11 @@ package middleware
 
 import (
 	"BMS-back-end/utils"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"net/http"
+	"strconv"
 )
 
 func Auth(next echo.HandlerFunc) echo.HandlerFunc {
@@ -19,10 +21,14 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		/* check validity of JWT */
-		_, err = utils.ParseJwt(cookie.Value)
+		jwtToken, err := utils.ParseJwt(cookie.Value)
 		if err != nil {
 			return c.String(http.StatusUnauthorized, "jwt invalid, please login again")
 		}
+
+		claims, _ := jwtToken.Claims.(jwt.MapClaims)
+		uid, _ := strconv.ParseUint(claims["sub"].(string), 10, 64)
+		c.Set("uid", uid)
 
 		return next(c)
 	}

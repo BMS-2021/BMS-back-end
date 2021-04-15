@@ -13,8 +13,7 @@ import (
 // @tags Borrow
 // @summary Borrow a new book
 // @router /borrow [post]
-// @param bookId query uint64 true "Book ID"
-// @param cardId query uint64 true "Card ID"
+// @param data body model.BorrowReq true " "
 // @produce plain
 // @success 200
 // @failure 400 {string} string "Bad request"
@@ -22,16 +21,15 @@ import (
 // @produce json
 // @failure 403 {object} object "The requested book has been all borrowed, return the last borrowed time object"
 func createBorrow(c echo.Context) error {
-	var bookId, cardId uint64
-	if err := echo.QueryParamsBinder(c).
-		MustUint64("bookId", &bookId).
-		MustUint64("cardId", &cardId).
-		BindError(); err != nil {
+	var borrowReq model.BorrowReq
+	if err := c.Bind(&borrowReq); err != nil {
 		return c.String(http.StatusBadRequest, "there are some errors with the parameters")
+	} else if err = c.Validate(&borrowReq); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	var dbBook *model.Book
-	dbBook, err := model.RetrieveBook(bookId);
+	dbBook, err := model.RetrieveBook(borrowReq.BookId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.String(http.StatusNotFound, "Book ID not found in database")
@@ -39,7 +37,7 @@ func createBorrow(c echo.Context) error {
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if _, err := model.GetCard(cardId); err != nil{
+	if _, err := model.GetCard(borrowReq.CardId); err != nil{
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.String(http.StatusNotFound, "Card ID not found in database")
 		}
@@ -48,14 +46,14 @@ func createBorrow(c echo.Context) error {
 	}
 
 	if dbBook.Stock == 0 {
-		t, err := model.GetNearestBorrowTime(bookId)
+		t, err := model.GetNearestBorrowTime(borrowReq.BookId)
 		if err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 		return c.JSON(http.StatusForbidden, &struct {Time time.Time `json:"time"`}{Time: *t})
 	}
 
-	if err := model.BorrowBook(bookId, cardId, dbBook); err != nil {
+	if err := model.BorrowBook(borrowReq.BookId, borrowReq.CardId, c.Get("uid").(uint64), dbBook); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
@@ -65,22 +63,20 @@ func createBorrow(c echo.Context) error {
 // @tags Borrow
 // @summary Return a book
 // @router /return [post]
-// @param bookId query uint64 true "Book ID"
-// @param cardId query uint64 true "Card ID"
+// @param data body model.BorrowReq true " "
 // @produce plain
 // @success 200
 // @failure 404 {string} string "Book not found or Card not found or Borrow not found"
 func updateReturn(c echo.Context) error {
-	var bookId, cardId uint64
-	if err := echo.QueryParamsBinder(c).
-		MustUint64("bookId", &bookId).
-		MustUint64("cardId", &cardId).
-		BindError(); err != nil {
+	var borrowReq model.BorrowReq
+	if err := c.Bind(&borrowReq); err != nil {
 		return c.String(http.StatusBadRequest, "there are some errors with the parameters")
+	} else if err = c.Validate(&borrowReq); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	var dbBook *model.Book
-	dbBook, err := model.RetrieveBook(bookId);
+	dbBook, err := model.RetrieveBook(borrowReq.BookId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.String(http.StatusNotFound, "Book ID not found in database")
@@ -88,7 +84,7 @@ func updateReturn(c echo.Context) error {
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	if _, err := model.GetCard(cardId); err != nil{
+	if _, err := model.GetCard(borrowReq.CardId); err != nil{
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.String(http.StatusNotFound, "Card ID not found in database")
 		}
@@ -96,19 +92,19 @@ func updateReturn(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	switch model.CheckBorrowNumByBookIdAndCardId(bookId, cardId) {
+	switch model.CheckBorrowNumByBookIdAndCardId(borrowReq.BookId, borrowReq.CardId) {
 	case 0:
 		return c.String(http.StatusNotFound, "Borrow not found in database")
 	case 1:
 		break
 	default:
-		logrus.WithField("bookId", bookId).
-			WithField("cardId", cardId).
+		logrus.WithField("bookId", borrowReq.BookId).
+			WithField("cardId", borrowReq.CardId).
 			Error("A person has borrowed multiple same books")
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	if err := model.ReturnBook(bookId, cardId, dbBook); err != nil {
+	if err := model.ReturnBook(borrowReq.BookId, borrowReq.CardId, dbBook); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 

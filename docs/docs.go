@@ -199,18 +199,13 @@ var doc = `{
                 "summary": "Borrow a new book",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Book ID",
-                        "name": "bookId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Card ID",
-                        "name": "cardId",
-                        "in": "query",
-                        "required": true
+                        "description": " ",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BorrowReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -393,18 +388,13 @@ var doc = `{
                 "summary": "Return a book",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Book ID",
-                        "name": "bookId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Card ID",
-                        "name": "cardId",
-                        "in": "query",
-                        "required": true
+                        "description": " ",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BorrowReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -511,6 +501,21 @@ var doc = `{
                     "type": "integer"
                 },
                 "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.BorrowReq": {
+            "type": "object",
+            "required": [
+                "bookId",
+                "cardId"
+            ],
+            "properties": {
+                "bookId": {
+                    "type": "integer"
+                },
+                "cardId": {
                     "type": "integer"
                 }
             }
