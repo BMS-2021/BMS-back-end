@@ -31,6 +31,11 @@ jwt:                               # Yes, this project uses jwt for authenticati
   secret_key: YourSuperSecretKey   # a secret key for jwt, please set this properly!!!
 ```
 
+### Generate API documentation
+You need to install [swaggo/swag](https://github.com/swaggo/swag), 
+and execute `swag init` under the root directory of this project.  
+This command generates a *Swagger Documentation 2.0* webpage, which contains the API documentation of this service.  
+
 ### Run and refer to the API documentation
 Now you can run the executable properly.  
 While running, the executable will start a server on `localhost:1323`.  
