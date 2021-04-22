@@ -1,6 +1,9 @@
 package model
 
-import "strconv"
+import (
+	"gorm.io/gorm"
+	"strconv"
+)
 
 type Book struct {
 	ID       uint64  `gorm:"not null;autoIncrement;primaryKey" csv:"-" json:"id"`
@@ -33,6 +36,8 @@ type BookQueryReq struct {
 	YearMax  uint64 `query:"yearMax"`
 	PriceMin uint64 `query:"priceMin"`
 	PriceMax uint64 `query:"priceMax"`
+	Order    string `query:"order"`
+	Desc     bool   `query:"desc"`
 }
 
 func CreateBooks(books *[]*Book) error {
@@ -40,7 +45,7 @@ func CreateBooks(books *[]*Book) error {
 	return result.Error
 }
 
-func RetrieveBooks(book *Book, year []uint64, price []uint64) (*[]Book, error) {
+func RetrieveBooks(book *Book, year []uint64, price []uint64, orderBy string, isDesc bool) (*[]Book, error) {
 	sqlConditionCount := 0
 	sqlConditionString := ""
 	if year[0] != 0 {
@@ -69,8 +74,22 @@ func RetrieveBooks(book *Book, year []uint64, price []uint64) (*[]Book, error) {
 		sqlConditionString += "price <= " + strconv.FormatUint(price[1], 10)
 	}
 
+	order := ""
+	if orderBy != "" {
+		order += orderBy
+		if isDesc {
+			order += " DESC"
+		}
+	}
+
 	var dbBooks []Book
-	result := db.Where(book).Find(&dbBooks, sqlConditionString)
+	var result *gorm.DB
+	if order == "" {
+		result = db.Where(book).Find(&dbBooks, sqlConditionString)
+	} else {
+		result = db.Where(book).Order(order).Find(&dbBooks, sqlConditionString)
+	}
+
 	return &dbBooks, result.Error
 }
 

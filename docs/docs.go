@@ -75,6 +75,16 @@ var doc = `{
                         "in": "query"
                     },
                     {
+                        "type": "boolean",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "name": "press",
                         "in": "query"

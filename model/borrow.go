@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"time"
 )
@@ -23,7 +24,8 @@ type BorrowReq struct {
 
 func GetBorrowWithBook(cardId uint64) (*[]Borrow, error) {
 	var borrows []Borrow
-	result := db.Preload("Book").Where(&Borrow{CardID: cardId}).Find(&borrows)
+	result := db.Model(&Borrow{}).Preload("Book").
+		Where("(return_time = 0 OR return_time IS NULL) AND card_id = ?", cardId).Find(&borrows)
 	return &borrows, result.Error
 }
 
@@ -45,9 +47,12 @@ func BorrowBook(bookId uint64, cardId uint64, adminId uint64, dbBook *Book) erro
 
 func ReturnBook(bookId uint64, cardId uint64, dbBook *Book) error {
 	return db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&Borrow{}).Where(&Borrow{BookID: bookId, CardID: cardId}).
-			Update("return_time", time.Now()).Error; err != nil {
-			return err
+		if result := tx.Model(&Borrow{}).
+			Where("(return_time = 0 OR return_time IS NULL) AND book_id = ? AND card_id = ?", bookId, cardId).
+			Update("return_time", time.Now()); result.Error != nil {
+			return result.Error
+		} else if result.RowsAffected != 1 {
+			return errors.New("the book willing to returned is not unique or doesn't exist")
 		}
 
 		dbBook.Stock += 1
@@ -66,6 +71,9 @@ func GetNearestBorrowTime(bookId uint64) (*time.Time, error) {
 }
 
 func CheckBorrowNumByBookIdAndCardId(bookId uint64, cardId uint64) uint64 {
-	result := db.Find(&Borrow{BookID: bookId, CardID: cardId})
-	return uint64(result.RowsAffected)
+	var count int64
+	db.Model(&Borrow{}).
+		Where("(return_time = 0 OR return_time IS NULL) AND book_id = ? AND card_id = ?", bookId, cardId).
+		Count(&count)
+	return uint64(count)
 }

@@ -32,17 +32,20 @@ func createBorrow(c echo.Context) error {
 	dbBook, err := model.RetrieveBook(borrowReq.BookId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.String(http.StatusNotFound, "Book ID not found in database")
+			return c.String(http.StatusNotFound, "book ID not found in database")
 		}
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	if _, err := model.GetCard(borrowReq.CardId); err != nil{
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.String(http.StatusNotFound, "Card ID not found in database")
+			return c.String(http.StatusNotFound, "card ID not found in database")
 		}
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
+	}
+	if model.CheckBorrowNumByBookIdAndCardId(borrowReq.BookId, borrowReq.CardId) != 0 {
+		return c.String(http.StatusBadRequest, "the user has already borrowed this book")
 	}
 
 	if dbBook.Stock == 0 {
@@ -79,14 +82,14 @@ func updateReturn(c echo.Context) error {
 	dbBook, err := model.RetrieveBook(borrowReq.BookId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.String(http.StatusNotFound, "Book ID not found in database")
+			return c.String(http.StatusNotFound, "book ID not found in database")
 		}
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	if _, err := model.GetCard(borrowReq.CardId); err != nil{
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.String(http.StatusNotFound, "Card ID not found in database")
+			return c.String(http.StatusNotFound, "card ID not found in database")
 		}
 		logrus.Error(err)
 		return c.NoContent(http.StatusInternalServerError)
@@ -94,7 +97,7 @@ func updateReturn(c echo.Context) error {
 
 	switch model.CheckBorrowNumByBookIdAndCardId(borrowReq.BookId, borrowReq.CardId) {
 	case 0:
-		return c.String(http.StatusNotFound, "Borrow not found in database")
+		return c.String(http.StatusNotFound, "borrow not found in database")
 	case 1:
 		break
 	default:
@@ -105,6 +108,9 @@ func updateReturn(c echo.Context) error {
 	}
 
 	if err := model.ReturnBook(borrowReq.BookId, borrowReq.CardId, dbBook); err != nil {
+		logrus.WithField("book_id", borrowReq.BookId).
+			WithField("card_id", borrowReq.CardId).
+			Error(err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
@@ -129,13 +135,10 @@ func getBorrowed(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 
-	booksMap := make(map[uint64]*model.Book)
 	books := make([]*model.Book, 0)
 	for _, v := range *borrows {
-		if _, ok := booksMap[v.BookID]; !ok {
-			booksMap[v.BookID] = &v.Book
-			books = append(books, &v.Book)
-		}
+		v := v
+		books = append(books, &v.Book)
 	}
 
 	return c.JSON(http.StatusOK, &books)

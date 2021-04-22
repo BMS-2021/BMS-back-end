@@ -141,7 +141,8 @@ func retrieveBooks(c echo.Context) error {
 
 	dbBooks, err := model.RetrieveBooks(&book,
 		[]uint64{bookQueryReq.YearMin, bookQueryReq.YearMax},
-		[]uint64{bookQueryReq.PriceMin, bookQueryReq.PriceMax})
+		[]uint64{bookQueryReq.PriceMin, bookQueryReq.PriceMax},
+		bookQueryReq.Order, bookQueryReq.Desc)
 
 	if err != nil {
 		return c.NoContent(http.StatusInternalServerError)

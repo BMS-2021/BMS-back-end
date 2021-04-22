@@ -80,7 +80,7 @@ func deleteCard(c echo.Context) error {
 	err := model.DeleteCard(id)
 	if err != nil {
 		logrus.Error(err)
-		return c.NoContent(http.StatusInternalServerError)
+		return c.String(http.StatusBadRequest, "cannot delete due to foreign key constraint")  // maybe contains error about foreign key
 	}
 
 	return c.NoContent(http.StatusOK)
