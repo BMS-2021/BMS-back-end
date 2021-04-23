@@ -64,9 +64,9 @@ func ReturnBook(bookId uint64, cardId uint64, dbBook *Book) error {
 	})
 }
 
-func GetNearestBorrowTime(bookId uint64) (*time.Time, error) {
+func GetNearestReturnTime(bookId uint64) (*time.Time, error) {
 	dbBorrow := Borrow{BookID: bookId}
-	result := db.Order("borrow_time ASC").First(&dbBorrow)
+	result := db.Order("return_time ASC").First(&dbBorrow)
 	return &dbBorrow.BorrowTime, result.Error
 }
 
@@ -74,6 +74,14 @@ func CheckBorrowNumByBookIdAndCardId(bookId uint64, cardId uint64) uint64 {
 	var count int64
 	db.Model(&Borrow{}).
 		Where("(return_time = 0 OR return_time IS NULL) AND book_id = ? AND card_id = ?", bookId, cardId).
+		Count(&count)
+	return uint64(count)
+}
+
+func CheckBorrowNumByCardId(cardId uint64) uint64 {
+	var count int64
+	db.Model(&Borrow{}).
+		Where("(return_time = 0 OR return_time IS NULL) AND card_id = ?", cardId).
 		Count(&count)
 	return uint64(count)
 }

@@ -49,7 +49,7 @@ func createBorrow(c echo.Context) error {
 	}
 
 	if dbBook.Stock == 0 {
-		t, err := model.GetNearestBorrowTime(borrowReq.BookId)
+		t, err := model.GetNearestReturnTime(borrowReq.BookId)
 		if err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}

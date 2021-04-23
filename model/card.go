@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 type Card struct {
 	ID         uint64
 	Name       string `gorm:"not null;size:10"`
@@ -25,6 +27,11 @@ func GetCard(id uint64) (*Card, error) {
 }
 
 func DeleteCard(id uint64) error {
-	result := db.Delete(&Card{}, id)
-	return result.Error
+	return db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("card_id = ?", id).Delete(&Borrow{}).Error; err != nil {
+			return err
+		}
+		err := tx.Delete(&Card{}, id).Error
+		return err
+	})
 }
