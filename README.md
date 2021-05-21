@@ -3,7 +3,7 @@
 This project is part of an assignment of the *Database System Principle* course.  
 The aim of this project is to create a `book` management system. Only the `admin` can login to this system, creating `borrow` instance for a borrower. The information of a borrower is stored into `card`. The whole model contains four tables mentioned above: admin, book, borrow and card.  
 
-This project is the back-end part of the assignment. You can find the front-end part at [Enzymii/BMS-front-end](https://github.com/Enzymii/BMS-front-end). While we choose to implement a MVC client-server structure, this project only implements the *model* and *controller* part.  
+This project is the back-end part of the assignment. You can find the front-end part at [BMS-2021/BMS-front-end](https://github.com/BMS-2021/BMS-front-end). While we choose to implement a MVC client-server structure, this project only implements the *model* and *controller* part.  
 If you want to write your own front-end while using this back-end, you will find that it is extremely easy, since every API of this project is well documented. This will be talked in the next chapter.  
 
 ## Requirements
